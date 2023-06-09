@@ -1,7 +1,6 @@
 package utils;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -42,7 +41,7 @@ public class Utils {
         return loadedClasses;
     }
 
-    public Vector<String[]> verifyClassByAnnot() throws ClassNotFoundException, UnsupportedEncodingException {
+    public Vector<String[]> verifyClassByAnnot() throws Exception {
         String p = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         p = URLDecoder.decode(p, "UTF-8");
         List<Class<?>> obj = loadClassesInProject(p, "");
