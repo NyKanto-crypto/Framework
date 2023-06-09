@@ -1,14 +1,15 @@
 package utils;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import annotation.Urls;
-import etu1862.framework.servlet.FrontServlet;
 
 public class Utils {
 
@@ -41,13 +42,10 @@ public class Utils {
         return loadedClasses;
     }
 
-    public Vector<String[]> verifyClassByAnnot() throws ClassNotFoundException {
-        FrontServlet ut = new FrontServlet();
-        String tout = ut.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        String tout2 = tout.replace("/", "\\");
-        File file = new File(tout2.replace("\\lib\\Framework.jar", "\\classes"));
-        String t = file.getAbsolutePath().replace("%20", " ");
-        List<Class<?>> obj = loadClassesInProject(t, "");
+    public Vector<String[]> verifyClassByAnnot() throws ClassNotFoundException, UnsupportedEncodingException {
+        String p = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        p = URLDecoder.decode(p, "UTF-8");
+        List<Class<?>> obj = loadClassesInProject(p, "");
         Class<?extends Annotation> classe = (Class<?extends Annotation>) Class.forName("annotation.Urls");
         Vector<String[]> vs = new Vector<>();
         for (Class<?> aClass : obj) {
