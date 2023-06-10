@@ -1,5 +1,4 @@
 package view;
-
 import java.util.HashMap;
 
 public class ModelView {

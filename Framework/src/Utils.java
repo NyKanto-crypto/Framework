@@ -40,14 +40,10 @@ public class Utils {
         }
         return loadedClasses;
     }
-
-    public Vector<String[]> verifyClassByAnnot() throws ClassNotFoundException {
-        FrontServlet ut = new FrontServlet();
-        String tout = ut.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        String tout2 = tout.replace("/", "\\");
-        File file = new File(tout2.replace("\\lib\\Framework.jar", "\\classes"));
-        String t = file.getAbsolutePath().replace("%20", " ");
-        List<Class<?>> obj = loadClassesInProject(t, "");
+    public Vector<String[]> verifyClassByAnnot() throws Exception {
+        String p = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        p = URLDecoder.decode(p, "UTF-8");
+        List<Class<?>> obj = loadClassesInProject(p, "");
         Class<?extends Annotation> classe = (Class<?extends Annotation>) Class.forName("annotation.Urls");
         Vector<String[]> vs = new Vector<>();
         for (Class<?> aClass : obj) {

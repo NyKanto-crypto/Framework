@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import etu1862.framework.Mapping;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -51,6 +52,16 @@ public class FrontServlet extends HttpServlet {
         for (Map.Entry<String, Object> obj : mv.getData().entrySet()) {
             req.setAttribute(obj.getKey(), obj.getValue());
         }
+    }
+
+    // Prendre Mapping : Class,Methode,Argument correspondant de L'URL
+    public Mapping getMapping(String url) throws Exception {
+        for (Map.Entry<String, Mapping> entry : this.MappingUrls.entrySet()) {
+            if (entry.getKey().equals(url)) {
+                return entry.getValue();
+            }
+        }
+        throw new Exception("URL NOT FOUND");
     }
 
     // Prendre Mapping : Class,Methode,Argument correspondant de L'URL

@@ -2,9 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import annotation.Urls;
 import view.ModelView;
+import annotation.Urls;
+
 public class Emp {
     int id;
     String nom;
