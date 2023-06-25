@@ -9,7 +9,7 @@ cd ../../
 SET CLASSPATH=.\test-Framework\WEB-INF\lib\Framework.jar
 javac -parameters -d test-Framework/WEB-INF/classes test-Framework/src/*.java
 cd test-Framework
-jar -cf ../framework6.war .
+jar -cf ../framework7.war .
 cd ..
-xcopy /y .\framework6.war "C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps"
+xcopy /y .\framework7.war "C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps"
 timeout 60
