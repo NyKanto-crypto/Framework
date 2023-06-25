@@ -41,6 +41,7 @@ public class Utils {
         }
         return toCast;
     }
+    
 
     public List<Class<?>> loadClassesInProject(String path, String pkg) throws ClassNotFoundException {
         List<Class<?>> loadedClasses = new ArrayList<>();
@@ -59,22 +60,34 @@ public class Utils {
         return loadedClasses;
     }
 
-    public Vector<String[]> verifyClassByAnnot() throws ClassNotFoundException, UnsupportedEncodingException {
+    public Vector<Object[][]> verifyClassByAnnot() throws ClassNotFoundException, UnsupportedEncodingException {
         String p = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         p = URLDecoder.decode(p, "UTF-8");
         System.out.println(p);
         List<Class<?>> obj = loadClassesInProject(p, "");
         Class<? extends Annotation> classe = (Class<? extends Annotation>) Class.forName("annotation.Urls");
-        Vector<String[]> vs = new Vector<>();
+        Vector<Object[][]> vs = new Vector<>();
         for (Class<?> aClass : obj) {
             Method[] m = aClass.getDeclaredMethods();
             for (Method method : m) {
                 if (method.isAnnotationPresent(classe)) {
                     Urls annotation = method.getAnnotation(Urls.class);
-                    String[] s = new String[3];
-                    s[0] = aClass.getPackage().getName() + "." + aClass.getSimpleName();
-                    s[1] = method.getName();
-                    s[2] = annotation.name();
+                    Object[][] s = new Object[6][1];
+                    if (method.getParameterCount() != 0) {
+                        s = new Object[6][method.getParameterCount()];
+                    }
+                    s[0][0] = aClass.getName();
+                    s[1][0] = method.getName();
+                    s[2][0] = annotation.name();
+                    s[3][0] = method.getParameterCount();
+                    System.out.println("method name " + s[1][0]);
+                    for (int index = 0; index < method.getParameterCount(); index++) {
+                        s[4][index] = method.getParameterTypes()[index];
+                        System.out.println("type parametre " + s[4][index]);
+                        s[5][index] = method.getParameters()[index].getName();
+                        System.out.println("nom parametre " + method.getParameters()[index].getName());
+                    }
+
                     vs.add(s);
                 }
             }

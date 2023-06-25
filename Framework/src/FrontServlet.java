@@ -33,7 +33,7 @@ public class FrontServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-        
+
         PrintWriter out = response.getWriter();
         Utils u = new Utils();
         String url_splited = u.getspliturl(request.getRequestURI());
@@ -71,6 +71,7 @@ public class FrontServlet extends HttpServlet {
             }
         }
     }
+    
 
     // appeler la fonction correspondant a l'url
     public ModelView getModelView(HttpServletRequest request, Mapping map, Object obj) throws Exception {
@@ -86,6 +87,7 @@ public class FrontServlet extends HttpServlet {
     // Prendre Mapping : Class,Methode,Argument correspondant de L'URL
     public Mapping getMapping(String url) throws Exception {
         for (Map.Entry<String, Mapping> entry : this.MappingUrls.entrySet()) {
+            System.out.println("url " + entry.getKey());
             if (entry.getKey().equals(url)) {
                 return entry.getValue();
             }
@@ -95,28 +97,47 @@ public class FrontServlet extends HttpServlet {
 
     // methode pour prendre les valeurs des arguments de la fonction
     public Object[] argumentValues(HttpServletRequest request, Method method) throws Exception {
-        Parameter[] param = method.getParameters();
-
-        Object[] values = new Object[param.length];
-        for (int i = 0; i < values.length; i++) {
-            Class type = param[i].getClass();
-            
-            String value = request.getParameter(param[i].getName());
-            values[i] = Utils.cast(value, type);
+        Parameter[] parameters = method.getParameters();
+        Object[] values = new Object[parameters.length];
+    
+        for (int i = 0; i < parameters.length; i++) {
+            Class<?> type = parameters[i].getType();
+            String paramName = parameters[i].getName();
+            String paramValue = request.getParameter(paramName);
+    
+            if (paramValue != null) {
+                values[i] = Utils.cast(paramValue, type);
+            } else {
+                // Gérer le cas où la valeur de la chaîne est null
+                // Par exemple, renvoyer une valeur par défaut appropriée ou lever une exception
+                throw new IllegalArgumentException("Missing value for parameter: " + paramName);
+            }
         }
+    
         return values;
     }
+    
 
     @Override
     public void init() throws ServletException {
         Utils u = new Utils();
         try {
             this.MappingUrls = new HashMap<>();
-            Vector<String[]> verif = u.verifyClassByAnnot();
-            for (String[] strings : verif) {
-                Mapping mapping = new Mapping(strings[0], strings[1]);
+            Vector<Object[][]> verif = u.verifyClassByAnnot();
+            for (Object[][] strings : verif) {
+                if (strings[3][0].equals(0)) {
+                    Mapping mapping = new Mapping((String) strings[0][0], (String) strings[1][0]);
 
-                this.MappingUrls.put(strings[2], mapping);
+                    this.MappingUrls.put((String) strings[2][0], mapping);
+                } else {
+                    Class[] classargument = new Class[strings[4].length];
+                    for (int j = 0; j < classargument.length; j++) {
+                        classargument[j] = (Class) strings[4][j];
+                    }
+                    Mapping mapping = new Mapping((String) strings[0][0], (String) strings[1][0], classargument);
+
+                    this.MappingUrls.put((String) strings[2][0], mapping);
+                }
             }
         } catch (Exception e) {
             // TODO: handle exception

@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <form action="save_emp" method="get">
-        <p>Id: <input type="number" name="id"></p>
-        <p>Nom: <input type="text" name="nom"></p>
-        <p>Prenom: <input type="text" name="prenom"></p>
-        <p>Date de naissance: <input type="date" name="dtn"></p>
+    <form action="save_emp.do" method="get">
+        <p>Id: <input type="number" name="Id"></p>
+        <p>Nom: <input type="text" name="Nom"></p>
+        <p>Prenom: <input type="text" name="Prenom"></p>
+        <p>Date de naissance: <input type="date" name="Dtn"></p>
         <button type="submit">Valider</button>
     </form>
 </body>
