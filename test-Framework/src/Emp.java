@@ -15,35 +15,35 @@ public class Emp {
 
     public Emp() {}
     
-    public Emp(int Id, String Nom, String Prenom, Date Dtn) {
-        this.id = Id;
-        this.nom = Nom;
-        this.prenom = Prenom;
-        this.dtn = Dtn;
+    public Emp(int id, String nom, String prenom, Date dtn) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.dtn = dtn;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int Id) {
-        this.id = Id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNom() {
         return nom;
     }
 
-    public void setNom(String Nom) {
-        this.nom = Nom;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
     public String getPrenom() {
         return prenom;
     }
 
-    public void setPrenom(String Prenom) {
-        this.prenom = Prenom;
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
     
     public Date getDtn() {
@@ -54,7 +54,7 @@ public class Emp {
         this.dtn = dtn;
     }
 
-    @Urls(name = "emp_list")
+    @Urls(name = "emp_list.do")
     public ModelView All() {
         ModelView mv = new ModelView();
         mv.setView("emp-list.jsp");
@@ -69,14 +69,14 @@ public class Emp {
         return mv;
     }
 
-    @Urls(name = "emp_add")
+    @Urls(name = "emp_add.do")
     public ModelView Add() {
         ModelView mv = new ModelView();
         mv.setView("emp-add.jsp");
         return mv;
     }
 
-    @Urls(name = "save_emp")
+    @Urls(name = "save_emp.do")
     public ModelView save(){
         ModelView mv = new ModelView();
         List<Object> listvalue = new ArrayList<>();
@@ -88,6 +88,16 @@ public class Emp {
         mv.addItem("lstvalue",listvalue);
 
         mv.setView("save.jsp");
+
+        return mv;
+    }
+
+    @Urls(name = "test.do")
+    public ModelView test(int id){
+        ModelView mv = new ModelView();
+        mv.addItem("id",id);
+
+        mv.setView("test.jsp");
 
         return mv;
     }
