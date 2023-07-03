@@ -6,7 +6,7 @@ public class Dept {
     @Urls(name = "dept_add.do")
     public ModelView Add() {
         ModelView mv = new ModelView();
-        mv.setView("dept-list.jsp");
+        mv.setView("web/dept-list.jsp");
         return mv;
     }
 }

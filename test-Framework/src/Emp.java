@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import annotation.Urls;
+import utils.FileUpload;
 import view.ModelView;
+
 public class Emp {
     private int id;
     private String nom;
     private String prenom;
     private Date dtn;
+    private FileUpload file;
 
     public Emp() {}
     
@@ -54,10 +57,18 @@ public class Emp {
         this.dtn = dtn;
     }
 
+    public FileUpload getFile() {
+        return file;
+    }
+
+    public void setFile(FileUpload file) {
+        this.file = file;
+    }
+
     @Urls(name = "emp_list.do")
     public ModelView All() {
         ModelView mv = new ModelView();
-        mv.setView("emp-list.jsp");
+        mv.setView("web/emp-list.jsp");
         List<Emp> listemp = new ArrayList<>();
         Emp a = new Emp(1, "RANDRIA", "Ny Kanto", Date.valueOf("2005-06-23"));
         Emp b = new Emp(2, "ANDRIA", "Notahina", Date.valueOf("2003-08-04"));
@@ -72,22 +83,24 @@ public class Emp {
     @Urls(name = "emp_add.do")
     public ModelView Add() {
         ModelView mv = new ModelView();
-        mv.setView("emp-add.jsp");
+        mv.setView("web/emp-add.jsp");
         return mv;
     }
 
-    @Urls(name = "save_emp.do")
-    public ModelView save(){
+    @Urls(name = "save.do")
+    public ModelView save_file(){
         ModelView mv = new ModelView();
         List<Object> listvalue = new ArrayList<>();
         listvalue.add(this.getId());
         listvalue.add(this.getNom());
         listvalue.add(this.getPrenom());
         listvalue.add(this.getDtn());
+        listvalue.add(this.getFile().getNom());
+        listvalue.add(this.getFile().getData());
 
         mv.addItem("lstvalue",listvalue);
 
-        mv.setView("save.jsp");
+        mv.setView("web/save.jsp");
 
         return mv;
     }
@@ -97,7 +110,7 @@ public class Emp {
         ModelView mv = new ModelView();
         mv.addItem("id",id);
 
-        mv.setView("test.jsp");
+        mv.setView("web/test.jsp");
 
         return mv;
     }

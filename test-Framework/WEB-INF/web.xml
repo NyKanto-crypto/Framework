@@ -2,19 +2,20 @@
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-  version="6.0">
+  version="6.0"
+  metadata-complete="true">
 
   <servlet>
     <servlet-name>FrontServlet</servlet-name>
     <servlet-class>etu1862.framework.servlet.FrontServlet</servlet-class>
+    <multipart-config>
+      <max-file-size>1048576</max-file-size> <!-- Taille maximale du fichier en octets -->
+      <max-request-size>2097152</max-request-size> <!-- Taille maximale de la requête en octets -->
+      <file-size-threshold>0</file-size-threshold> <!-- Seuil de taille des fichiers stockés en mémoire (en octets) -->
+    </multipart-config>
   </servlet>
   <servlet-mapping>
     <servlet-name>FrontServlet</servlet-name>
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
-  <session-config>
-    <session-timeout>
-      30
-    </session-timeout>
-  </session-config>
 </web-app>
