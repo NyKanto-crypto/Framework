@@ -1,25 +1,18 @@
 package etu1862.framework.servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.sql.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
 import etu1862.framework.Mapping;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import utils.Utils;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+
+import utils.*;
 import view.ModelView;
 
+@MultipartConfig
 public class FrontServlet extends HttpServlet {
     HashMap<String, Mapping> MappingUrls;
 
@@ -33,7 +26,6 @@ public class FrontServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-
         PrintWriter out = response.getWriter();
         Utils u = new Utils();
         String url_splited = u.getspliturl(request.getRequestURI());
@@ -48,7 +40,6 @@ public class FrontServlet extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher(mv.getView());
             dispatcher.forward(request, response);
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new RuntimeException(ex);
         }
     }
@@ -62,16 +53,31 @@ public class FrontServlet extends HttpServlet {
     // request -> data
     public void sendData(HttpServletRequest request, Object obj) throws Exception {
         Field[] fields = obj.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
-            String value = request.getParameter(field.getName());
-            if (value != null) {
-                field.setAccessible(true);
-                field.set(obj, Utils.cast(value, field.getType()));
+        // Vérifiez le type de contenu de la requête
+        String contentType = request.getContentType();
+        if (contentType != null && contentType.startsWith("multipart/form-data")) {
+            for (Field field : fields) {
+                if (field.getType() == FileUpload.class) {
+                    Part filePart = request.getPart(field.getName());
+                    if (filePart != null) {
+                        field.setAccessible(true);
+                        String fileName = filePart.getSubmittedFileName();
+                        byte[] fileData = filePart.getInputStream().readAllBytes();
+                        FileUpload file = new FileUpload();
+                        file.setNom(fileName);
+                        file.setData(fileData);
+                        field.set(obj, file);
+                    }
+                } else {
+                    String value = request.getParameter(field.getName());
+                    if (value != null) {
+                        field.setAccessible(true);
+                        field.set(obj, Utils.cast(value, field.getType()));
+                    }
+                }
             }
         }
     }
-    
 
     // appeler la fonction correspondant a l'url
     public ModelView getModelView(HttpServletRequest request, Mapping map, Object obj) throws Exception {
@@ -99,12 +105,12 @@ public class FrontServlet extends HttpServlet {
     public Object[] argumentValues(HttpServletRequest request, Method method) throws Exception {
         Parameter[] parameters = method.getParameters();
         Object[] values = new Object[parameters.length];
-    
+
         for (int i = 0; i < parameters.length; i++) {
             Class<?> type = parameters[i].getType();
             String paramName = parameters[i].getName();
             String paramValue = request.getParameter(paramName);
-    
+
             if (paramValue != null) {
                 values[i] = Utils.cast(paramValue, type);
             } else {
@@ -113,10 +119,9 @@ public class FrontServlet extends HttpServlet {
                 throw new IllegalArgumentException("Missing value for parameter: " + paramName);
             }
         }
-    
+
         return values;
     }
-    
 
     @Override
     public void init() throws ServletException {
